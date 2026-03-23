@@ -85,19 +85,17 @@
     status.style.display = 'none';
 
     try {
-      const res = await fetch(WEBHOOK_URL, {
+      await fetch(WEBHOOK_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({ name, email })
       });
-      if (res.ok) {
-        status.className = 'status success';
-        status.textContent = '✅ You\'re subscribed! You\'ll receive daily MLS listing alerts.';
-        status.style.display = 'block';
-        document.getElementById('signupForm').reset();
-      } else {
-        throw new Error('Server error');
-      }
+      // no-cors mode means we can't read the response, but the request goes through
+      status.className = 'status success';
+      status.textContent = '✅ You\'re subscribed! You\'ll receive daily MLS listing alerts.';
+      status.style.display = 'block';
+      document.getElementById('signupForm').reset();
     } catch (err) {
       status.className = 'status error';
       status.textContent = '❌ Something went wrong. Please try again.';

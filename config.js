@@ -1,2 +1,1 @@
-// ⚠️ PASTE YOUR WEBHOOK URL BELOW (replace the placeholder)
-const WEBHOOK_URL = https://mitch-labs.github.io/mls-signup/;
+const WEBHOOK_URL = "https://webhooks.tasklet.ai/v1/public/webhook?token=833e7483cef8b554a3445bc5aadc682b";

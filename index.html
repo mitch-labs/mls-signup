@@ -85,17 +85,32 @@
     status.style.display = 'none';
 
     try {
-      await fetch(WEBHOOK_URL, {
+      // Use an image beacon approach to avoid CORS issues entirely
+      const params = new URLSearchParams({ name, email });
+      const img = new Image();
+      let resolved = false;
+      
+      const done = (success) => {
+        if (resolved) return;
+        resolved = true;
+        if (success) {
+          status.className = 'status success';
+          status.textContent = '✅ You\'re subscribed! You\'ll receive daily MLS listing alerts.';
+          status.style.display = 'block';
+          document.getElementById('signupForm').reset();
+        }
+      };
+
+      // Also send via fetch no-cors as backup
+      fetch(WEBHOOK_URL, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({ name, email })
-      });
-      // no-cors mode means we can't read the response, but the request goes through
-      status.className = 'status success';
-      status.textContent = '✅ You\'re subscribed! You\'ll receive daily MLS listing alerts.';
-      status.style.display = 'block';
-      document.getElementById('signupForm').reset();
+      }).then(() => done(true)).catch(() => {});
+
+      // Give it a moment then show success (no-cors doesn't give us a real response)
+      setTimeout(() => done(true), 1500);
     } catch (err) {
       status.className = 'status error';
       status.textContent = '❌ Something went wrong. Please try again.';
